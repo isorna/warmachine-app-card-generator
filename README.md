@@ -4,6 +4,16 @@ Generador local para Windows: convierte tus listas guardadas en Warmachine App e
 
 Proyecto independiente: no requiere Wardice, Codex, Node.js ni Poppler. No incluye perfiles, ilustraciones, iconos ni listas del juego. Lee los datos descargados por tu propia instalación de Warmachine App, sin modificarlos.
 
+## Propiedad intelectual e independencia
+
+**Warmachine, Warmachine App y los datos y recursos del juego utilizados por esta herramienta (reglas, perfiles, textos, nombres, ilustraciones, iconos y demás assets) son propiedad de Steamforged Games Ltd.** Todos los derechos sobre esos contenidos pertenecen a sus titulares. Sitio oficial: [warmachine.gg](https://warmachine.gg/).
+
+**Este proyecto no tiene ninguna relación con Steamforged Games Ltd.: no está afiliado, patrocinado, autorizado ni respaldado por la empresa.** Es una herramienta comunitaria no oficial, desarrollada sin ánimo de lucro para ayudar a los jugadores a preparar cartas de referencia para sus partidas.
+
+La licencia MIT se aplica exclusivamente al código y la documentación propios del generador, no a Warmachine App ni a los datos o assets del juego. Extraer o transformar esos recursos no transfiere su propiedad ni concede permisos para redistribuirlos o explotarlos. Los componentes de terceros conservan sus propias licencias.
+
+La finalidad sin ánimo de lucro describe este proyecto; no añade una restricción de uso comercial a la licencia MIT del código. Consulta [LICENSE](LICENSE) y [THIRD_PARTY.md](THIRD_PARTY.md).
+
 ## Inicio rápido
 
 1. Instala **Python de 64 bits, 3.11 o posterior** desde [python.org](https://www.python.org/downloads/windows/). Activa la opción de añadirlo al PATH. Probado localmente con Python 3.13.
@@ -95,3 +105,5 @@ El código mantiene la licencia MIT del proyecto de origen. Consulta [THIRD_PART
 Windows only. Install 64-bit Python 3.11+, launch Warmachine App, download its data and save a force. Extract this project, run **Configurar-rutas.cmd** to confirm your installation/data directories, then **Generar-cartas-Warmachine.cmd** to select a force. Dependencies install automatically into a local virtual environment on first launch. **Comprobar-instalacion.cmd** checks the installation.
 
 Output: `output/warmachine-app/cards/`, with a review PDF and paired 300 dpi PNG files in a ZIP for MPC Large Landscape (5.75 × 3.5 inches). Game data and artwork are read locally and are not shipped in this repository. Current UI and diagnostic messages are in Spanish.
+
+**Ownership and independence:** Warmachine, Warmachine App and the game data and assets used by this tool are the property of Steamforged Games Ltd. This is an unofficial community project, developed without a profit motive to help players. It has no relationship with, and is not affiliated with, sponsored, authorized or endorsed by Steamforged Games Ltd. The MIT license covers only the generator's own code and documentation, not the game or its content. The project's non-profit purpose does not add a non-commercial restriction to the MIT license. Official website: [warmachine.gg](https://warmachine.gg/).

@@ -19,3 +19,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+Third-party intellectual property and project purpose notice
+(This notice is separate from, and does not modify, the MIT License above.)
+
+The MIT License above applies only to the original code and documentation
+of Warmachine App Card Generator. It does not apply to Warmachine,
+Warmachine App, or any game data or assets accessed, extracted, processed
+or rendered by this tool.
+
+Warmachine, Warmachine App, and their game data and assets, including rules,
+profiles, text, names, artwork and icons, are the property of Steamforged
+Games Ltd. All rights in that content remain with their respective rights
+holders. Third-party software and other components retain their own licenses.
+No ownership or license to redistribute or commercially exploit game content
+is granted by this project or by the MIT License above.
+
+This is an unofficial community project developed without a profit motive
+to help Warmachine players prepare reference cards for their games. It has
+no relationship with Steamforged Games Ltd. and is not affiliated with,
+sponsored, authorized or endorsed by Steamforged Games Ltd.
+This statement of purpose does not impose a non-commercial restriction on
+the generator's MIT-licensed code.
+
+Official Warmachine website: https://warmachine.gg/
+See THIRD_PARTY.md for further information about locally accessed resources.
