@@ -1,0 +1,7 @@
+cryptography==50.0.2
+reportlab==4.4.9
+pypdf==6.10.0
+pdfplumber==0.11.9
+Pillow==12.3.0
+pypdfium2==5.14.0
+UnityPy==1.25.4
