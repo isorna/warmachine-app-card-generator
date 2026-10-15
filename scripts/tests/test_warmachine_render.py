@@ -22,3 +22,12 @@ class SmallDeckExportTest(unittest.TestCase):
    subprocess.run([sys.executable,str(ROOT/'export-cards.py'),str(root)],check=True,capture_output=True)
    self.assertTrue((root/'mpc/001-front.png').exists());self.assertTrue((root/'mpc/001-back.png').exists());self.assertTrue((root/'cartas-mpc.zip').exists())
 if __name__=='__main__':unittest.main()
+
+class ArmyRulesRenderTest(unittest.TestCase):
+ def test_army_without_models_renders_complete_rules_and_pairs(self):
+  card={'name':'Army reference','instanceId':'army','type':'Army','faction':'Test','isArmyRules':True,'portrait':None,'models':[],'abilities':[{'name':'Army rule','description':'Unique complete army rule.'}],'feat':{'name':''},'spells':[],'options':[]}
+  with tempfile.TemporaryDirectory() as tmp:
+   r=m.Renderer(Path(tmp),Path(tmp));r.front(card);r.rules(card);r.save()
+   pdf=PdfReader(Path(tmp)/'cartas-mpc.pdf');text=' '.join(p.extract_text() for p in pdf.pages)
+   self.assertEqual(len(pdf.pages)%2,0);self.assertIn('Unique complete army rule.',text)
+   self.assertNotIn('SPD',pdf.pages[0].extract_text());self.assertNotIn('COMMAND CARD',text)

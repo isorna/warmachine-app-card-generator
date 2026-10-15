@@ -81,6 +81,7 @@ Después de la primera ejecución:
 ## Compatibilidad y límites
 
 - Windows, fuentes Arial/Segoe UI del sistema y Warmachine App instalada con datos descargados.
+- Cartas de reglas de ejército (Army) sin modelos, como Dreadtides: imagen y reglas completas en cartas complementarias.
 - Daño Box, Box Multi, Grid, Spiral y Spiral Large; perfiles múltiples con daño asignable por nombre; cartas de mando seleccionadas.
 - Tipos como Web, metadatos desconocidos o referencias ambiguas se rechazan con informe. No se inventan datos.
 - El lector depende del formato local de la app. Una actualización puede requerir adaptar el proyecto.

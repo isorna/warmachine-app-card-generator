@@ -42,7 +42,10 @@ def name_tokens(name):
 
 def printable_components(card):
  import copy,math
- if not card['models']:raise ValueError('Perfil sin modelos')
+ if not card['models']:
+  if card.get('type')=='Army' and card.get('damage',{}).get('kind')=='none' and card.get('abilities'):
+   item=copy.deepcopy(card);item['isArmyRules']=True;return [item]
+  raise ValueError('Perfil sin modelos')
  result=[];multi=len(card['models'])>1
  damage=card['damage'];assignments={i:[] for i in range(len(card['models']))}
  if multi and damage['kind']!='none':

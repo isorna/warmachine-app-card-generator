@@ -63,3 +63,13 @@ class CommandSelectionTests(unittest.TestCase):
    cards,media,errors=m.materialize(force,{},Path(tmp),Path(tmp))
   self.assertEqual(cards,[]);self.assertTrue(errors)
 if __name__=='__main__':unittest.main()
+
+class ArmyRulesTests(unittest.TestCase):
+ def test_army_rules_without_models_preserved(self):
+  card={'name':'Army reference','type':'Army','models':[],'damage':{'kind':'none'},'abilities':[{'name':'Rule','description':'Complete rule'}]}
+  result=m.printable_components(card)
+  self.assertEqual(len(result),1);self.assertTrue(result[0]['isArmyRules'])
+  self.assertEqual(result[0]['abilities'],card['abilities']);self.assertNotIn('isArmyRules',card)
+ def test_missing_models_still_rejected_for_units_or_health(self):
+  for kind,damage,abilities in [('Unit','none',[{}]),('Army','track',[{}]),('Army','none',[])]:
+   with self.assertRaises(ValueError):m.printable_components({'type':kind,'models':[],'damage':{'kind':damage},'abilities':abilities})

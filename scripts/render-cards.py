@@ -110,7 +110,12 @@ class Renderer:
    self.section(21,130,'PERFILES CONCEDIDOS / '+str(p['grantedCardCount']),210)
    self.par(' · '.join(esc(g['name']) for g in p['grantedCards']),21,149,210,9)
   self.text(21,229,'Reglas completas en el reverso y suplementos',8,color=MUTED);self.finish(p,'front')
+ def army_front(self,p):
+  self.header(p,'FRENTE',True);self.section(21,60,'REGLAS DE EJÉRCITO',389)
+  if p.get('portrait'):self.c.drawImage(str(self.root/p['portrait']),126,H-80-140,180,140,preserveAspectRatio=True,anchor='c',mask='auto')
+  self.text(21,229,'Reglas completas en el reverso y suplementos',8,color=MUTED);self.finish(p,'front')
  def front(self,p):
+  if p.get('isArmyRules'):return self.army_front(p)
   if p.get('isCommand'):return self.command_front(p)
   if len(p['models'])!=1:raise ValueError('Multi-model layout not yet supported')
   m=p['models'][0];self.header(p,'FRENTE',True)
@@ -153,7 +158,7 @@ class Renderer:
    if not rules:return
    out.append(('heading',label));out.extend(('rule',r) for r in rules)
   if p['feat']['name']:group('FEAT',[p['feat']])
-  group('REGLAS DE COMMAND CARD' if p.get('isCommand') else 'HABILIDADES DEL PERFIL',p['abilities']+[a for m in p['models'] for a in m['abilities']])
+  group('REGLAS DE COMMAND CARD' if p.get('isCommand') else ('REGLAS DE EJÉRCITO' if p.get('isArmyRules') else 'HABILIDADES DEL PERFIL'),p['abilities']+[a for m in p['models'] for a in m['abilities']])
   for m in p['models']:
    for w in m['weapons']:group('ARMA / '+w['name'].upper(),w['abilities'])
   if p['spells']:
