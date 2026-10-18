@@ -31,3 +31,17 @@ class ArmyRulesRenderTest(unittest.TestCase):
    pdf=PdfReader(Path(tmp)/'cartas-mpc.pdf');text=' '.join(p.extract_text() for p in pdf.pages)
    self.assertEqual(len(pdf.pages)%2,0);self.assertIn('Unique complete army rule.',text)
    self.assertNotIn('SPD',pdf.pages[0].extract_text());self.assertNotIn('COMMAND CARD',text)
+
+class LargeGridRenderTest(unittest.TestCase):
+ def test_two_numbered_halves_and_system_positions(self):
+  from unittest.mock import patch
+  rows=[['-']*12 for _ in range(6)];rows[0][0]=' ';rows[3][6]='I';rows[5][11]='R'
+  with tempfile.TemporaryDirectory() as tmp:
+   r=m.Renderer(Path(tmp),Path(tmp))
+   with patch.object(r,'rect') as rect,patch.object(r,'text') as text:
+    r.health({'kind':'grid-large','total':3,'rows':rows},21,151,108)
+    cells=[call.args[:4] for call in rect.call_args_list if call.args[2:4]==(7,7)]
+    self.assertEqual(cells,[(21,185,7,7),(80,209,7,7),(120,225,7,7)])
+    labels=[call.args[2] for call in text.call_args_list]
+    self.assertEqual([v for v in labels if isinstance(v,int)],[1,2,3,4,5,6]*2)
+    self.assertIn('IZQUIERDA',labels);self.assertIn('DERECHA',labels)

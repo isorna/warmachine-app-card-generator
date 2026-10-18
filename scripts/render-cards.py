@@ -83,6 +83,17 @@ class Renderer:
      if v!='-':
       self.rect(x+8+j*14,y+23+i*6.5,6,6,white,INK)
       if v.strip():self.text(x+9+j*14,y+23.7+i*6.5,v.strip(),4.6,'Bold')
+  elif d['kind']=='grid-large':
+   # Two independent six-column grids, preserving source left-to-right order.
+   for side,label in enumerate(['IZQUIERDA','DERECHA']):
+    ox=x+side*59
+    self.text(ox,y+15,label,5.5,'Bold',RED)
+    for col in range(6):self.text(ox+1+col*8,y+25,col+1,5.5,'Bold',RED)
+    for row,values in enumerate(d['rows']):
+     for col,v in enumerate(values[side*6:(side+1)*6]):
+      if v!='-':
+       self.rect(ox+col*8,y+34+row*8,7,7,white,INK)
+       if v.strip():self.text(ox+1+col*8,y+35+row*8,v.strip(),5,'Bold')
   elif d['kind']=='spiral':
    large=d['sourceType'] in ['SpiralLarge','Spiral Large']
    assets=Path(__file__).parent/'assets'
@@ -123,13 +134,13 @@ class Renderer:
   cw=389/len(keys)
   for i,k in enumerate(keys):
    x=21+i*cw;self.rect(x,56,cw-2,28,LIGHT);self.text(x+5,59,'CTL' if k=='CTRL' else k,6,'Bold',MUTED);self.text(x+5,69,m['statistics'].get(k) or '-',12,'Bold')
-  spiral=p['damage']['kind']=='spiral'
-  ph=40 if spiral else 58
+  compactHealth=p['damage']['kind'] in ['spiral','grid-large']
+  ph=40 if compactHealth else 58
   self.c.drawImage(str(self.root/p['portrait']),21,H-90-ph,108,ph,preserveAspectRatio=True,anchor='c',mask='auto')
   iconStep=min(20,106/max(1,len(m['advantages'])))
-  for i,a in enumerate(m['advantages']):self.icon(a['icon'],22+i*iconStep,132 if spiral else 149,min(16,iconStep-2))
-  self.text(141 if spiral else 21,235 if spiral else 168,('PC CONJUNTO ' if p.get('groupName') else 'PC ')+p['points']+'   FA '+p['fieldAllowance']+'   '+m['baseSize'],7,'Bold')
-  self.health(p['damage'],21,151 if spiral else 178,108)
+  for i,a in enumerate(m['advantages']):self.icon(a['icon'],22+i*iconStep,132 if compactHealth else 149,min(16,iconStep-2))
+  self.text(141 if compactHealth else 21,235 if compactHealth else 168,('PC CONJUNTO ' if p.get('groupName') else 'PC ')+p['points']+'   FA '+p['fieldAllowance']+'   '+m['baseSize'],7,'Bold')
+  self.health(p['damage'],21,151 if compactHealth else 178,108)
   x=141;ww=269;self.section(x,91,'ARMAS / ATAQUES',ww)
   xx=[x+3,x+119,x+145,x+172,x+198,x+224]
   for pos,label in zip(xx,['ARMA','ATK','RNG','ROF','AOE','POW']):self.text(pos,107,label,5.7,'Bold',MUTED)
@@ -150,7 +161,7 @@ class Renderer:
     self.section(x,y+2,'CONFIGURACIÓN SELECCIONADA',ww);y+=18
     y+=self.par(' · '.join(esc(o['name']) for o in p['options']),x+3,y,ww-6,8)
   if y>235:raise ValueError('Front overflow '+p['name'])
-  if not spiral:self.text(x,235,'Reglas e iconos explicados en las caras de referencia',6,color=MUTED)
+  if not compactHealth:self.text(x,235,'Reglas e iconos explicados en las caras de referencia',6,color=MUTED)
   self.finish(p,'front')
  def blocks(self,p):
   out=[]

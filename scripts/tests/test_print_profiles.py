@@ -42,3 +42,13 @@ class LargeSpiralTests(unittest.TestCase):
  def test_large_spiral_capacity_rejected(self):
   with self.assertRaises(ValueError):m.damage({'healthType':'Spiral Large','healthValue1':'25','healthValue2':'24','healthValue3':'19'})
 if __name__=='__main__':unittest.main()
+
+class LargeGridTests(unittest.TestCase):
+ def test_two_halves_keep_every_source_cell(self):
+  rows=['-,-, , , , , , , , ,-,-','-,-, , , , , , , , ,-,-','-,-, , ,S,S,S,S, , ,-,-','-, ,L,L,S,I,I,S,R,R, ,-','L,L,I,I,I,I,I,I,I,I,R,R','M,M,M,M,M,I,I,M,M,M,M,M']
+  d=m.damage({'healthType':'Grid Large',**{f'healthValue{i+1}':r for i,r in enumerate(rows)}})
+  self.assertEqual(d['kind'],'grid-large');self.assertEqual(d['total'],58)
+  self.assertEqual(d['rows'],[r.split(',') for r in rows]);self.assertEqual(d['rows'][3][6:10],['I','S','R','R'])
+ def test_wrong_width_and_extra_rows_rejected(self):
+  for width,extra in [(6,''),(13,''),(12,'L')]:
+   with self.assertRaises(ValueError):m.damage({'healthType':'Grid Large',**{f'healthValue{i}':','.join([' ']*width) for i in range(1,7)},'healthValue7':extra})

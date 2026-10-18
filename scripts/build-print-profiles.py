@@ -37,11 +37,12 @@ def damage(card):
    if not str(v).isdigit():raise ValueError('Invalid multi damage value')
    rows.append({'name':clean(card.get('healthName'+str(i),'')) or 'Model '+str(i),'total':int(v),'sourceIndex':i})
   out.update(kind='tracks',rows=rows,total=sum(r['total'] for r in rows))
- elif typ=='Grid':
+ elif typ in ['Grid','Grid Large']:
   rows=[v.split(',') for v in vals[:6]]
-  if any(len(r)!=6 for r in rows):raise ValueError('Unexpected grid dimensions')
+  columns=12 if typ=='Grid Large' else 6
+  if any(len(r)!=columns for r in rows) or any(v.strip() for v in vals[6:]):raise ValueError('Unexpected grid dimensions')
   # Empty/space is an active generic box; '-' is an absent position.
-  out.update(kind='grid',rows=rows,total=sum(v!='-' for r in rows for v in r))
+  out.update(kind='grid-large' if typ=='Grid Large' else 'grid',rows=rows,total=sum(v!='-' for r in rows for v in r))
  elif typ in ['Spiral','SpiralLarge','Spiral Large']:
   aspects=[]
   for i,v in enumerate(vals[:3]):
