@@ -52,3 +52,14 @@ class LargeGridTests(unittest.TestCase):
  def test_wrong_width_and_extra_rows_rejected(self):
   for width,extra in [(6,''),(13,''),(12,'L')]:
    with self.assertRaises(ValueError):m.damage({'healthType':'Grid Large',**{f'healthValue{i}':','.join([' ']*width) for i in range(1,7)},'healthValue7':extra})
+
+class WebDamageTests(unittest.TestCase):
+ def test_all_current_web_counts(self):
+  for typ,counts in [('Web',[12,8,4]),('Web',[7,5,2]),('Web',[9,5,4]),('Web',[11,7,4]),('Web Large',[30,16,10])]:
+   d=m.damage({'healthType':typ,**{f'healthValue{i+1}':str(v) for i,v in enumerate(counts)}})
+   self.assertEqual(d['kind'],'web');self.assertEqual(d['total'],sum(counts))
+   self.assertEqual(d['rings'],[{'ring':label,'total':n} for label,n in zip('OMI',counts)])
+ def test_bad_web_values_fail_closed(self):
+  for values in [('-1','8','4'),('13','8','4'),('12','9','4'),('12','8','5'),('x','8','4'),('0','0','0')]:
+   with self.assertRaises(ValueError):m.damage({'healthType':'Web',**{f'healthValue{i+1}':v for i,v in enumerate(values)}})
+  with self.assertRaises(ValueError):m.damage({'healthType':'Web','healthValue1':'12','healthValue2':'8','healthValue3':'4','healthValue4':'1'})

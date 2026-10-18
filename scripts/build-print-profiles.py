@@ -43,6 +43,16 @@ def damage(card):
   if any(len(r)!=columns for r in rows) or any(v.strip() for v in vals[6:]):raise ValueError('Unexpected grid dimensions')
   # Empty/space is an active generic box; '-' is an absent position.
   out.update(kind='grid-large' if typ=='Grid Large' else 'grid',rows=rows,total=sum(v!='-' for r in rows for v in r))
+ elif typ in ['Web','Web Large']:
+  # UXManager.PopulateHealth: HealthValue1/2/3 = outer/middle/inner.
+  caps=[30,16,10] if typ=='Web Large' else [12,8,4]
+  rings=[]
+  for label,value,cap in zip('OMI',vals[:3],caps):
+   if not re.fullmatch(r'\d+',str(value)) or not 0<=int(value)<=cap:raise ValueError('Web ring outside supported capacity')
+   rings.append({'ring':label,'total':int(value)})
+  if any(str(v).strip() for v in vals[3:]):raise ValueError('Unexpected extra Web values')
+  if not sum(r['total'] for r in rings):raise ValueError('Empty damage web')
+  out.update(kind='web',rings=rings,total=sum(r['total'] for r in rings))
  elif typ in ['Spiral','SpiralLarge','Spiral Large']:
   aspects=[]
   for i,v in enumerate(vals[:3]):

@@ -23,6 +23,22 @@ def faction_theme(name):
 def blend(a,b,t):
  return Color(a.red+(b.red-a.red)*t,a.green+(b.green-a.green)*t,a.blue+(b.blue-a.blue)*t)
 
+def web_geometry(d):
+ # Measured Unity templates: 550x550 ringRoot, rotating zero-size anchors.
+ # Normal top offsets derive from bottom:206/-191/39 with 70px circles.
+ # Large overrides middle/inner top to126/-112 and scales circles.
+ large=d['sourceType']=='Web Large'
+ offsets=[-241,161,-77] if large else [-241,156,-74]
+ scales=[.75,.725,.7] if large else [1,1,1]
+ rings=[]
+ for ring,dy,factor in zip(d['rings'],offsets,scales):
+  count=ring['total'];radius=min(35*factor,275-abs(dy))
+  # Small print clearance prevents adjacent large-web circles overlapping.
+  if count>1:radius=min(radius,abs(dy)*math.sin(math.pi/count)*.92)
+  cells=[(275+dy*math.sin(i*2*math.pi/count),275+dy*math.cos(i*2*math.pi/count),radius) for i in range(count)]
+  rings.append({'ring':ring['ring'],'radius':abs(dy),'cells':cells})
+ return rings
+
 def esc(s):return html.escape(str(s)).replace('\n','<br/>').replace('★','<font name="Symbols">★</font>')
 class Renderer:
  def __init__(self,root,out):
@@ -67,7 +83,7 @@ class Renderer:
  def health(self,d,x,y,w):
   if d['kind']=='none':
    self.section(x,y,'DAÑO',w);self.text(x,y+16,'Sin track en el perfil de origen',6.3,color=MUTED);return
-  self.section(x,y,('ESPIRAL' if d['kind']=='spiral' else 'DAÑO')+' / '+str(d['total']),w)
+  self.section(x,y,('ESPIRAL' if d['kind']=='spiral' else 'WEB' if d['kind']=='web' else 'DAÑO')+' / '+str(d['total']),w)
   if d['kind']=='track':
    for i in range(d['total']):self.rect(x+(i%10)*10.5,y+17+(i//10)*11,8,8,white,INK)
   elif d['kind']=='tracks':
@@ -94,6 +110,16 @@ class Renderer:
       if v!='-':
        self.rect(ox+col*8,y+34+row*8,7,7,white,INK)
        if v.strip():self.text(ox+1+col*8,y+35+row*8,v.strip(),5,'Bold')
+  elif d['kind']=='web':
+   side=78;scale=side/550;ox=x+(w-side)/2;oy=y+13
+   colors=[HexColor('#8b2635'),HexColor('#94611d'),HexColor('#484567')]
+   for i,ring in enumerate(web_geometry(d)):
+    col=colors[i]
+    self.text(x+78+i*10,y+3,ring['ring'],6,'Bold',col)
+    self.c.setStrokeColor(col);self.c.setLineWidth(.55)
+    if ring['cells']:self.c.circle(ox+275*scale,H-oy-275*scale,ring['radius']*scale,fill=0,stroke=1)
+    for cx,cy,rad in ring['cells']:
+     self.c.setFillColor(white);self.c.circle(ox+cx*scale,H-oy-cy*scale,rad*scale,fill=1,stroke=1)
   elif d['kind']=='spiral':
    large=d['sourceType'] in ['SpiralLarge','Spiral Large']
    assets=Path(__file__).parent/'assets'
@@ -134,7 +160,7 @@ class Renderer:
   cw=389/len(keys)
   for i,k in enumerate(keys):
    x=21+i*cw;self.rect(x,56,cw-2,28,LIGHT);self.text(x+5,59,'CTL' if k=='CTRL' else k,6,'Bold',MUTED);self.text(x+5,69,m['statistics'].get(k) or '-',12,'Bold')
-  compactHealth=p['damage']['kind'] in ['spiral','grid-large']
+  compactHealth=p['damage']['kind'] in ['spiral','grid-large','web']
   ph=40 if compactHealth else 58
   self.c.drawImage(str(self.root/p['portrait']),21,H-90-ph,108,ph,preserveAspectRatio=True,anchor='c',mask='auto')
   iconStep=min(20,106/max(1,len(m['advantages'])))

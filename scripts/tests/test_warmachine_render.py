@@ -45,3 +45,19 @@ class LargeGridRenderTest(unittest.TestCase):
     labels=[call.args[2] for call in text.call_args_list]
     self.assertEqual([v for v in labels if isinstance(v,int)],[1,2,3,4,5,6]*2)
     self.assertIn('IZQUIERDA',labels);self.assertIn('DERECHA',labels)
+
+class WebGeometryTests(unittest.TestCase):
+ def test_original_ring_positions_and_no_overlapping_cells(self):
+  import math
+  for typ,counts,ys in [('Web',[12,8,4],[34,431,201]),('Web Large',[30,16,10],[34,436,198]),('Web',[7,5,2],[34,431,201])]:
+   d={'sourceType':typ,'rings':[{'ring':label,'total':n} for label,n in zip('OMI',counts)]}
+   rings=m.web_geometry(d);cells=[c for r in rings for c in r['cells']]
+   self.assertEqual(len(cells),sum(counts))
+   for r,y,n in zip(rings,ys,counts):
+    self.assertEqual(r['cells'][0][:2],(275,y));self.assertEqual(len(r['cells']),n)
+   for i,(x,y,r) in enumerate(cells):
+    self.assertTrue(r<=x<=550-r and r<=y<=550-r)
+    for xx,yy,rr in cells[i+1:]:self.assertGreater(math.hypot(x-xx,y-yy),r+rr)
+ def test_zero_ring_has_no_cells(self):
+  rings=m.web_geometry({'sourceType':'Web','rings':[{'ring':l,'total':n} for l,n in zip('OMI',[1,0,1])]})
+  self.assertEqual(rings[1]['cells'],[])

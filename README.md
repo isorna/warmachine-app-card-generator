@@ -82,8 +82,8 @@ Después de la primera ejecución:
 
 - Windows, fuentes Arial/Segoe UI del sistema y Warmachine App instalada con datos descargados.
 - Cartas de reglas de ejército (Army) sin modelos, como Dreadtides: imagen y reglas completas en cartas complementarias.
-- Daño Box, Box Multi, Grid, Grid Large (rejillas izquierda/derecha de colosales), Spiral y Spiral Large; perfiles múltiples con daño asignable por nombre; cartas de mando seleccionadas.
-- Tipos como Web, metadatos desconocidos o referencias ambiguas se rechazan con informe. No se inventan datos.
+- Daño Box, Box Multi, Grid, Grid Large (rejillas izquierda/derecha de colosales), Spiral, Spiral Large, Web y Web Large; perfiles múltiples con daño asignable por nombre; cartas de mando seleccionadas.
+- Tipos de daño no soportados, metadatos desconocidos o referencias ambiguas se rechazan con informe. No se inventan datos.
 - En perfiles con varios modelos, un marcador Box único sin nombre se asigna sólo si un modelo coincide exactamente y de forma única con el nombre del perfil (por ejemplo, Malady Man). Las asignaciones ambiguas se rechazan.
 - El lector depende del formato local de la app. Una actualización puede requerir adaptar el proyecto.
 - Es una herramienta comunitaria independiente, no un producto oficial.
