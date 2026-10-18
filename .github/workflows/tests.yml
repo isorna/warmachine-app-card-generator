@@ -18,3 +18,4 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements.txt
       - run: python -m unittest discover -s scripts/tests
+      - run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/tests/test-python-setup.ps1
