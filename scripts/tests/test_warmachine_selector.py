@@ -73,3 +73,24 @@ class ArmyRulesTests(unittest.TestCase):
  def test_missing_models_still_rejected_for_units_or_health(self):
   for kind,damage,abilities in [('Unit','none',[{}]),('Army','track',[{}]),('Army','none',[])]:
    with self.assertRaises(ValueError):m.printable_components({'type':kind,'models':[],'damage':{'kind':damage},'abilities':abilities})
+
+class UnnamedSingleTrackTests(unittest.TestCase):
+ def fixture(self,names):
+  return {'name':'Named leader','models':[{'name':n,'weapons':[]} for n in names],'damage':{'kind':'track','name':'','total':5,'sourceType':'Box'}}
+ def test_exact_namesake_gets_track_even_when_not_first(self):
+  card=self.fixture(['Companion','Named leader']);out=m.printable_components(card)
+  self.assertEqual(out[0]['damage']['kind'],'none')
+  self.assertEqual(out[1]['damage']['total'],5)
+  self.assertEqual(out[1]['damage']['rows'][0]['name'],'Named leader')
+  self.assertEqual(out[1]['damage']['rows'][0]['assignment'],'exact-card-name')
+  self.assertEqual(card['damage']['name'],'')
+ def test_no_fuzzy_or_first_model_fallback(self):
+  for names in [['Leader form A','Leader form B'],['Named leader mounted','Companion'],['Named leader','Named leader']]:
+   with self.assertRaises(ValueError):m.printable_components(self.fixture(names))
+ def test_named_track_keeps_its_explicit_assignment(self):
+  card=self.fixture(['Named leader','Companion']);card['damage']['name']='Companion'
+  out=m.printable_components(card)
+  self.assertEqual(out[0]['damage']['kind'],'none');self.assertEqual(out[1]['damage']['total'],5)
+ def test_unnamed_multi_track_does_not_use_namesake(self):
+  card=self.fixture(['Named leader','Companion']);card['damage']={'kind':'tracks','rows':[{'name':'','total':5}],'total':5,'sourceType':'Box Multi'}
+  with self.assertRaises(ValueError):m.printable_components(card)

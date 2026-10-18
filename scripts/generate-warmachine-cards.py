@@ -54,7 +54,13 @@ def printable_components(card):
   else:raise ValueError('Varios modelos con daño no nominal: requiere adaptador')
   for row in rows:
    tokens=name_tokens(row['name'])
-   matches=[i for i,m in enumerate(card['models']) if tokens and tokens<=name_tokens(m['name'])]
+   if damage['kind']=='track' and not row['name'].strip():
+    # A single unnamed Box track may identify the card's namesake model.
+    # Never assign by list order, fuzzy matching, or duplicate it to companions.
+    matches=[i for i,m in enumerate(card['models']) if m['name'].strip().casefold()==card['name'].strip().casefold()]
+    if len(matches)==1:row=dict(row,name=card['models'][matches[0]]['name'],assignment='exact-card-name')
+   else:
+    matches=[i for i,m in enumerate(card['models']) if tokens and tokens<=name_tokens(m['name'])]
    if len(matches)!=1:raise ValueError('Fila de daño ambigua: '+row['name'])
    assignments[matches[0]].append(row)
  for i,model in enumerate(card['models']):
